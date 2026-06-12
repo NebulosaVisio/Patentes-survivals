@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patente Roleplay — Os últimos sobreviventes</title>
+    <meta name="description" content="Patente Roleplay — Os últimos sobreviventes. Crie personagens, gerencie quests e explore o mapa de Knox County.">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <!-- ═══════════ LOGIN SCREEN ═══════════ -->
+    <div id="login-screen" class="login-container">
+        <div class="login-card">
+            <div class="login-logo">🧟</div>
+            <h1>Patente Roleplay</h1>
+            <p class="subtitle">Os últimos sobreviventes</p>
+
+            <div class="login-tabs">
+                <button class="login-tab active" data-tab="login" id="tab-login">Entrar</button>
+                <button class="login-tab" data-tab="register" id="tab-register">Registrar</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-username">Usuário</label>
+                    <input type="text" id="login-username" class="form-input" placeholder="Seu nome de jogador" required autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Senha</label>
+                    <input type="password" id="login-password" class="form-input" placeholder="••••••••" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">⚡ Entrar no Painel</button>
+            </form>
+
+            <!-- Register Form -->
+            <form id="register-form" style="display: none;">
+                <div class="form-group">
+                    <label for="reg-username">Usuário</label>
+                    <input type="text" id="reg-username" class="form-input" placeholder="Escolha seu nome" required autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label for="reg-password">Senha</label>
+                    <input type="password" id="reg-password" class="form-input" placeholder="Mínimo 4 caracteres" required minlength="4" autocomplete="new-password">
+                </div>
+                <div class="form-group">
+                    <label for="reg-confirm">Confirmar Senha</label>
+                    <input type="password" id="reg-confirm" class="form-input" placeholder="Repita a senha" required autocomplete="new-password">
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">🎮 Criar Conta</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ═══════════ MAIN APP ═══════════ -->
+    <div id="app-screen" class="app-container" style="display: none;">
+
+        <!-- Sidebar Overlay (mobile) -->
+        <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <span class="logo-icon">🧟</span>
+                <div>
+                    <h2>Patente Roleplay</h2>
+                    <span class="version">Os últimos sobreviventes</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-item active" data-page="dashboard" id="nav-dashboard">
+                    <span class="nav-icon">📊</span>
+                    <span>Painel</span>
+                </div>
+                <div class="nav-item" data-page="characters" id="nav-characters">
+                    <span class="nav-icon">🧑</span>
+                    <span>Criar Personagem</span>
+                </div>
+                <div class="nav-item" data-page="map" id="nav-map">
+                    <span class="nav-icon">🗺️</span>
+                    <span>Mapa & Quests</span>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar" id="user-avatar">?</div>
+                    <div class="user-details">
+                        <div class="username" id="display-username">Jogador</div>
+                        <div class="role" id="display-role">JOGADOR</div>
+                    </div>
+                    <button class="btn-logout" id="btn-logout" title="Sair">🚪</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+            <!-- ═══════════ DASHBOARD PAGE ═══════════ -->
+            <div class="page-section active" id="page-dashboard">
+                <div class="page-header">
+                    <h1>
+                        <button class="menu-toggle" id="menu-toggle">☰</button>
+                        📊 Painel do Jogo
+                    </h1>
+                    <div class="header-actions">
+                        <button class="btn btn-ghost btn-sm" id="btn-reset-session" title="Resetar sessão">🔄 Reset</button>
+                    </div>
+                </div>
+                <div class="page-body">
+                    <!-- Stats -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon green">✅</div>
+                            <div class="stat-info">
+                                <h3 id="stat-alive">0</h3>
+                                <p>Personagens Vivos</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon red">💀</div>
+                            <div class="stat-info">
+                                <h3 id="stat-dead">0</h3>
+                                <p>Personagens Mortos</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon blue">👥</div>
+                            <div class="stat-info">
+                                <h3 id="stat-players">0</h3>
+                                <p>Jogadores</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon yellow">📜</div>
+                            <div class="stat-info">
+                                <h3 id="stat-quests">0</h3>
+                                <p>Quests Ativas</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Players & Sorteio -->
+                    <div class="players-section">
+                        <div class="section-header">
+                            <h2>👥 Jogadores & Sorteio</h2>
+                        </div>
+                        <div class="players-config">
+                            <div class="form-group">
+                                <label for="player-count">Qtd. de Jogadores</label>
+                                <input type="number" id="player-count" class="form-input" min="1" max="12" value="4" style="width: 100px;">
+                            </div>
+                            <button class="btn btn-ghost btn-sm" id="btn-apply-players">Aplicar</button>
+                            <button class="btn btn-primary btn-sm" id="btn-sortear">🎲 Sortear Personagens</button>
+                            <button class="btn btn-ghost btn-sm" id="btn-resortear-morto" title="Sortear novo personagem para jogador com char morto">💀 Re-sortear Morto</button>
+                        </div>
+                        <div class="player-input-grid" id="player-inputs">
+                            <!-- Generated dynamically -->
+                        </div>
+
+                        <div class="sorteio-result" id="sorteio-result">
+                            <h3 style="margin-bottom: 0.75rem; font-size: 1rem;">🎲 Resultado do Sorteio</h3>
+                            <div class="sorteio-grid" id="sorteio-grid">
+                                <!-- Generated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Characters List -->
+                    <div class="section-header">
+                        <h2>🧑 Personagens</h2>
+                    </div>
+                    <div class="characters-grid" id="characters-grid">
+                        <div class="empty-state" id="empty-characters">
+                            <div class="empty-icon">🧑</div>
+                            <h3>Nenhum personagem criado</h3>
+                            <p>Vá para "Criar Personagem" para começar</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══════════ CHARACTER CREATION PAGE ═══════════ -->
+            <div class="page-section" id="page-characters">
+                <div class="page-header">
+                    <h1>
+                        <button class="menu-toggle" id="menu-toggle-2">☰</button>
+                        🧑 Criação de Personagem
+                    </h1>
+                </div>
+                <div class="page-body">
+                    <div class="creation-form">
+                        <!-- Basic Info -->
+                        <div class="form-section">
+                            <h3>📋 Informações Básicas</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="char-name">Nome do Personagem</label>
+                                    <input type="text" id="char-name" class="form-input" placeholder="Ex: Rick Grimes" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="char-age">Idade</label>
+                                    <input type="number" id="char-age" class="form-input" min="16" max="80" value="30" placeholder="16–80">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Alignment -->
+                        <div class="form-section">
+                            <h3>⚖️ Alinhamento</h3>
+                            <div class="alignment-grid" id="alignment-grid">
+                                <!-- Generated from data -->
+                            </div>
+                        </div>
+
+                        <!-- Points Counter -->
+                        <div class="points-counter">
+                            <span class="points-label">Pontos Disponíveis:</span>
+                            <span class="points-value zero" id="points-display">0</span>
+                        </div>
+
+                        <!-- Positive Traits -->
+                        <div class="form-section">
+                            <h3>✅ Traços Positivos <span style="font-weight:400; font-size:0.8rem; color: var(--text-muted);">(custam pontos)</span></h3>
+                            <div class="traits-search">
+                                <input type="text" class="form-input" id="search-positive" placeholder="🔍 Buscar traço positivo...">
+                            </div>
+                            <div class="traits-list" id="positive-traits-list">
+                                <!-- Generated from data -->
+                            </div>
+                        </div>
+
+                        <!-- Negative Traits -->
+                        <div class="form-section">
+                            <h3>❌ Traços Negativos <span style="font-weight:400; font-size:0.8rem; color: var(--text-muted);">(fornecem pontos)</span></h3>
+                            <div class="traits-search">
+                                <input type="text" class="form-input" id="search-negative" placeholder="🔍 Buscar traço negativo...">
+                            </div>
+                            <div class="traits-list" id="negative-traits-list">
+                                <!-- Generated from data -->
+                            </div>
+                        </div>
+
+                        <!-- Save Button -->
+                        <div style="display: flex; gap: 0.75rem; margin-top: 1rem;">
+                            <button class="btn btn-primary" id="btn-save-char">💾 Salvar Personagem</button>
+                            <button class="btn btn-ghost" id="btn-clear-form">🗑️ Limpar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══════════ MAP PAGE ═══════════ -->
+            <div class="page-section" id="page-map">
+                <div class="page-header" style="padding: 0.75rem 1.5rem;">
+                    <h1 style="font-size: 1.2rem;">
+                        <button class="menu-toggle" id="menu-toggle-3">☰</button>
+                        🗺️ Mapa & Quests
+                    </h1>
+                    <div class="header-actions">
+                        <button class="btn btn-primary btn-sm" id="btn-add-quest-header">📌 Nova Quest</button>
+                        <span style="font-size: 0.75rem; color: var(--text-muted);" id="map-coords">Coords: —</span>
+                    </div>
+                </div>
+                <div class="map-container">
+                    <div class="map-area">
+                        <div id="pz-map">
+                            <div id="quest-overlays"></div>
+                        </div>
+                    </div>
+                    <aside class="quest-sidebar" id="quest-sidebar">
+                        <div class="quest-sidebar-header">
+                            <h3>📜 Quests</h3>
+                            <button class="btn btn-primary btn-sm" id="btn-add-quest">+ Nova</button>
+                        </div>
+                        <div class="quest-list" id="quest-list">
+                            <div class="empty-state" id="empty-quests">
+                                <div class="empty-icon">📜</div>
+                                <h3>Nenhuma quest</h3>
+                                <p>Clique no mapa ou no botão "Nova Quest" para criar</p>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ═══════════ QUEST MODAL ═══════════ -->
+    <div class="modal-overlay" id="quest-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>📌 <span id="quest-modal-title">Nova Quest</span></h3>
+                <button class="btn-icon btn-ghost" id="btn-close-quest-modal">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="quest-name">Nome da Quest</label>
+                    <input type="text" id="quest-name" class="form-input" placeholder="Ex: Explorar Fort Redstone">
+                </div>
+                <div class="form-group">
+                    <label for="quest-description">Descrição</label>
+                    <textarea id="quest-description" class="form-input" placeholder="Descreva o objetivo da quest..."></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="quest-difficulty">Dificuldade</label>
+                        <select id="quest-difficulty" class="form-input">
+                            <option value="easy">🟢 Fácil</option>
+                            <option value="medium">🟡 Médio</option>
+                            <option value="hard">🔴 Difícil</option>
+                            <option value="hardcore">💀 Hardcore</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="quest-reward">Recompensa</label>
+                        <input type="text" id="quest-reward" class="form-input" placeholder="Ex: Arma rara">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="quest-location">Localização</label>
+                    <input type="text" id="quest-location" class="form-input" placeholder="Ex: Muldraugh, centro" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="quest-assign">Atribuir ao Jogador</label>
+                    <select id="quest-assign" class="form-input">
+                        <option value="">— Todos os jogadores —</option>
+                    </select>
+                </div>
+                <input type="hidden" id="quest-lat">
+                <input type="hidden" id="quest-lng">
+                <input type="hidden" id="quest-edit-id">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" id="btn-cancel-quest">Cancelar</button>
+                <button class="btn btn-primary" id="btn-confirm-quest">💾 Salvar Quest</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════ RE-SORTEAR MODAL ═══════════ -->
+    <div class="modal-overlay" id="resortear-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>💀 Re-sortear Personagem</h3>
+                <button class="btn-icon btn-ghost" id="btn-close-resortear-modal">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="resortear-player">Jogador que perdeu o personagem</label>
+                    <select id="resortear-player" class="form-input">
+                        <option value="">— Selecionar jogador —</option>
+                    </select>
+                </div>
+                <p style="font-size:0.8rem; color:var(--text-secondary); margin-top:0.5rem;">
+                    O personagem atual será marcado como morto e um novo será sorteado dentre os disponíveis.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" id="btn-cancel-resortear">Cancelar</button>
+                <button class="btn btn-danger" id="btn-confirm-resortear">💀 Re-sortear</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/openseadragon@4.1.1/build/openseadragon/openseadragon.min.js"></script>
+    <script src="js/data/traits.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
