@@ -729,7 +729,7 @@
             id: 'pz-map',
             prefixUrl: 'https://cdn.jsdelivr.net/npm/openseadragon@4.1.1/build/openseadragon/images/',
             tileSources: MAP_TILE_SOURCE,
-            crossOriginPolicy: 'Anonymous',
+            crossOriginPolicy: isLocal ? 'Anonymous' : false,
             showNavigationControl: true,
             showNavigator: true,
             navigatorPosition: 'BOTTOM_RIGHT',
