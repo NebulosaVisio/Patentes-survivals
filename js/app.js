@@ -704,11 +704,20 @@
     }
 
     // ═══════════════════════════════════════════════════
-    //  MAP & QUESTS (OpenSeadragon via local CORS proxy)
+    //  MAP & QUESTS (OpenSeadragon - local proxy or direct)
     // ═══════════════════════════════════════════════════
 
-    // DZI from b42map.com served through our local proxy to avoid CORS
-    const MAP_DZI_URL = '/map-proxy/base/layer0.dzi';
+    // Detect environment: local dev (proxy) vs hosted (direct tiles)
+    var isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+    // Inline DZI config avoids CORS fetch of the XML. Tiles load as <img> (no CORS).
+    var MAP_TILE_SOURCE = {
+        Image: {
+            xmlns: 'http://schemas.microsoft.com/deepzoom/2008',
+            Url: isLocal ? '/map-proxy/base/layer0_files/' : 'https://b42map.com/map_data/base/layer0_files/',
+            Format: 'jpg', Overlap: '0', TileSize: '1024',
+            Size: { Width: '2314432', Height: '1019072' }
+        }
+    };
 
     function initMap() {
         if (pzMap) return;
@@ -716,7 +725,8 @@
         pzMap = OpenSeadragon({
             id: 'pz-map',
             prefixUrl: 'https://cdn.jsdelivr.net/npm/openseadragon@4.1.1/build/openseadragon/images/',
-            tileSources: MAP_DZI_URL,
+            tileSources: MAP_TILE_SOURCE,
+            crossOriginPolicy: 'Anonymous',
             showNavigationControl: true,
             showNavigator: true,
             navigatorPosition: 'BOTTOM_RIGHT',
