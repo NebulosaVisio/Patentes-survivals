@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 
 const app = express();
-const PORT = 3000;
+const PORT = 3001;
 
 // Serve static files (no cache during dev)
 app.use(express.static(path.join(__dirname), {

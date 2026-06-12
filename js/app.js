@@ -707,9 +707,12 @@
     //  MAP & QUESTS (OpenSeadragon - local proxy or direct)
     // ═══════════════════════════════════════════════════
 
-    // Detect environment: local dev (proxy) vs hosted (direct tiles)
+    // Detect environment: local dev (Express proxy) vs hosted (direct tiles)
     var isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
-    // Inline DZI config avoids CORS fetch of the XML. Tiles load as <img> (no CORS).
+    // b42map.com blocks requests with a foreign Referer header.
+    // The <meta name="referrer" content="no-referrer"> tag in index.html
+    // suppresses the Referer so tiles load correctly from any host.
+    // Local: use our Express proxy. Hosted: load directly (no Referer sent).
     var MAP_TILE_SOURCE = {
         Image: {
             xmlns: 'http://schemas.microsoft.com/deepzoom/2008',
